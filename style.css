@@ -1,0 +1,48 @@
+html {
+    font-family: "Noto Sans JP", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+.logo {
+    background-color: rgb(70, 188, 224);              /*background color*/
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 1vw;
+  }
+
+  .information div {
+    border: 5px solid rgb(70, 188, 224); 
+    border-radius: 10px;
+    padding: 10px;
+  }
+
+a:hover {                                /*pseudo class*/
+    color: rgb(70, 188, 224) !important;         /*font color*/
+}
+
+a:visited {                              /*pseudo class*/
+    color: rgb(14, 14, 14);      /*font color*/
+}
+
+a:link {                               /*pseudo class*/
+    color: rgb(14, 14, 14);       /*font color*/
+}
+
+#contacts {
+    a:hover {                                /*pseudo class*/
+        color: rgb(14, 14, 14) !important;        /*font color*/
+    }
+    
+    a:visited {                              /*pseudo class*/
+        color: rgb(14, 14, 14);      /*font color*/
+    }
+    
+    a:link {                               /*pseudo class*/
+        color: rgb(14, 14, 14);       /*font color*/
+    }
+}
+
+
+
