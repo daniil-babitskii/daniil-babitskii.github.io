@@ -1,0 +1,113 @@
+"""
+author: Daniil Babitskii;
+date of last changing: 06/22/2025;
+script goal: updating orders and profit info in the accounting Excel book for a company, which sells on tik tok shop
+"""
+
+import pandas as pd
+import xlsxwriter
+import openpyxl
+from openpyxl.styles import numbers
+
+try:
+    # import excel data
+    df_income_path = input("Enter income excel file path: ").strip().strip('"').strip("'")
+    df_orders_path = input("Enter orders excel file path: ").strip().strip('"').strip("'")
+    
+    df_income = pd.read_excel(df_income_path)
+    df_order = pd.read_excel(df_orders_path)
+    
+    # Both of the frames contain many unnecessary columns, so we choose only what we need for accounting
+    df_income = df_income[['Order/adjustment ID','Product name','Total settlement amount','Net sales','Shipping','Customer-paid shipping fee','Referral fee']]
+    df_order = df_order[['Created Time','Order ID','Product Name','Seller SKU','Normal or Pre-order','Quantity','Sku Quantity of return','Variation','Original Shipping Fee']]
+    
+    # The first row of the df is some more text information - it is unusable for accounting
+    df_order.drop(index=0, inplace=True)
+    
+    """
+    Fill out empty values in the orders column: if the order is marked as normal, it means it is an order for profit, 
+    if the value is empty, it means the order was made by the creator/influencer; it means the product was sent for free to a person who will advertise it
+    So, later in Excel, it will not be counted as a for-profit order.
+    """
+    df_order["Normal or Pre-order"] = df_order["Normal or Pre-order"].fillna('Sample')
+    
+    # Order IDs are numbers but we do not need to calculate it so convert them to strings
+    df_order["Order ID"] = df_order["Order ID"].astype(str)
+    df_income["Order/adjustment ID"] = df_income["Order/adjustment ID"].astype(str)
+    
+    # Two data frames contain columns which we can use as keys for merging
+    df_merged = df_order.merge(
+        df_income, 
+        left_on=["Order ID", "Product Name"], 
+        right_on=["Order/adjustment ID", "Product name"], 
+        how="outer"
+    )
+    
+    """
+    After we merged the tables we do not need duplicates of orders numbers and do not need orders numbers duplicates and pruducts names at all
+    because we use SKUs
+    """
+    df_merged.drop(["Order/adjustment ID", "Product name", "Product Name"], axis=1, inplace=True)
+    
+    #excel file and sheet names, user can change the names or add an input for the path
+    accounting_file = "prices.xlsx" #your file can have any name but in this specific situation this is the name
+    sheet_name = "orders_income" #the sheet in the file can have any name but in this specific situation this is the name
+    
+    try:
+        # worjing with accounting excel file
+        df_existing = pd.read_excel(accounting_file, sheet_name)
+        df_existing["Order ID"] = df_existing["Order ID"].astype(str)
+        df_existing["Seller SKU"] = df_existing["Seller SKU"].astype(str)
+    
+        # Concatinating old data from the accounting file and new data from merged data frame
+        df_combined = pd.concat([df_merged, df_existing], ignore_index=True)
+    
+        # Because some of the orders could be in the file, additionaly there can be updates on some of the orders we delete the elder duplicates
+        df_final = df_combined.drop_duplicates(subset=["Order ID", "Seller SKU"], keep='first')
+    
+    
+    except ValueError:
+        # if there is no orders_income sheet in the accounting file the code adds new data as the only data we have
+        df_final = df_merged
+    
+    # Write new data to excel
+    with pd.ExcelWriter(accounting_file, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+        df_final.to_excel(writer, sheet_name=sheet_name, index=False)
+    
+    # Open excel book for formating
+    wb = openpyxl.load_workbook(accounting_file)
+    ws = wb[sheet_name]
+    
+    # text format for B and C (Order ID and Seller SKU)
+    for row in ws.iter_rows(min_row=2, min_col = 2, max_col=3): #columns titles (1st row) is already in text format
+        for cell in row:  # Columns B and C
+            cell.number_format = '@'
+
+    #integer format for E (Quantity) and F (Sku Quantity of return)
+    for row in ws.iter_rows(min_row=2, min_col=5, max_col=6):  # E (Quantity) and F (Sku Quantity of return)
+        for cell in row:
+            if isinstance(cell.value, str):
+                cell.value = int(cell.value)
+            cell.number_format = numbers.FORMAT_NUMBER
+
+    #float format for H (Original Shipping Fee), I (Total settlement amount), J (Net sales), K (Shipping), L (Customer-paid shipping fee), L (Referral fee) 
+    for row in ws.iter_rows(min_row=2, min_col=8, max_col=13):  # H (Original Shipping Fee), I (Total settlement amount), J (Net sales), K (Shipping), L (Customer-paid shipping fee), L (Referral fee) 
+        for cell in row:
+            if isinstance(cell.value, str):
+                cell.value = float(cell.value)
+            cell.number_format = numbers.FORMAT_NUMBER_00
+
+
+    
+    # save file
+    wb.save(accounting_file)
+
+#if there an error a user wants to see it maybe the pass is incorrect, or prices file is in the wrong location
+except Exception as e:
+    import traceback
+    print("Error:")
+    print(type(e).__name__, "-", e)
+    traceback.print_exc()
+
+finally:
+    input("\nPress Enter, to close the window...")

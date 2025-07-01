@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--
+        author: Daniil Babitskii-->
+        <title>Daniil Babitskii Portfolio</title>
+
+        <!--Meta Data: -->
+        <meta charset="UTF-8" />
+        <meta name="keywords" content="daniil, babitskii, data, analyst, analysis, visualization, sql, excel, office, microsoft, power, bi, statistics">
+       
+        <!--CSS: -->
+        <link rel="stylesheet" href="layout.css">
+        <link rel="stylesheet" href="style.css">
+        <!--Fonts: -->
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&family=Playwrite+MX:wght@100..400&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="main">
+            <header>
+                <div class="logo">
+                    <img src="Photo.jpg" alt="logo" width="6%">
+                    <h1>Daniil Babitskii - Data Analyst</h1>
+                        <ul>                                                                                 <!-- list-->
+                            <li><a href="mailto:daniilbabitskii01@gmail.com">&#x2709; daniilbabitskii01@gmail.com</a></li>      <!--character references-->
+                            <li><a href="tel:+19807660695">&#x2706;+1 (980) 766-0695</a></li>                  <!--character references-->
+                            <li><a href="https://www.linkedin.com/in/daniilbabitskii01">LinkedIn link: www.linkedin.com/in/daniilbabitskii01</a></li>
+                        </ul>
+                    
+                </div>
+            </header>
+            <div class="navigation-bar">                                               <!--Navigation bar-->                                                      <!-- list-->
+                  <li><a href="Daniil_Babitskii_Resume.docx"><h2>Resume</h2></a></li>   <!--character references-->
+                  <li><a href="index.html"><h2>Home Page</h2></a></li>    <!--character references-->
+            </div>
+            <div class="information">
+                <p><strong>Project goal:</strong> Partial automation of order and income data updates (for analysis and calculations) to reduce manual labor and errors in small business accounting.<br><br>
+                <strong>*</strong> I can't attach order, profit, and accounting files because they contain commercial and customer data. Later I'll add these files with fake data to demonstrate how the script works.<br><br>
+                <strong>Description:</strong> TikTok Shop is an e-commerce platform (similar to Amazon). From the profile, sellers can download Excel files containing orders in their store and payments for them. My friend, a current seller, asked me to work with his accounting department. This particular project allows a seller to receive data from order and payment files, process them properly, and upload them to the accounting file for analysis and calculations.<br><br>
+                <strong>Advantages:</strong><br>
+                1. The script selects only the necessary columns from the files (the original files contain a information that is unnecessary for calculations)<br>
+                2. It allows a seller to update the data in the accounting file, removing duplicates and saving only fresh data, since information on payments can change over time depending on deductions, returns, etc.<br>
+                3. It sets the necessary data types for specific columns, which prevents duplicates (due to scientific notation in the columns with the order number and SKU) and avoids damaging calculations in Excel formulas on other sheets during the conversion of numeric columns to text.<br><br>
+                <strong>Possible further improvements:</strong><br>
+                1. Using the API, eliminate the steps for downloading order and income files and receive data directly.<br>
+                2. As the business grows and the number of orders increases, working with Excel can become quite slow, so using the same principles, I can adapt the script to write data to the database.<br><br>
+                <strong>Conclusion:</strong><br>
+                It is a small project, but at the same time, it is not an educational project; it is a specific task that solves real business problems, eliminates manual data entry, and frees up a huge amount of time for employees.<br>
+                </p>
+                <ul>
+                    <li><a href="orders_income_updater.txt" target="_blank">Project File</a></li>
+                </ul>
+            </div>
+        </div>
+    </body>
+</html>
